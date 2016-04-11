@@ -1,0 +1,17 @@
+.comment {
+  padding: 0px 10px;
+  width: 250px;
+  border: solid 2px #333;
+  border-radius: 10px;
+  background-color: #ccc;
+  color: #333;
+  margin: 5px;
+}
+
+.comment h2 {
+  margin: 0;
+}
+
+.commentForm {
+  margin-top: 15px;
+}
