@@ -54,12 +54,11 @@ app.post("/api/comments", function (req, res, next) {
 		);
 
 		var firebaseComment = new Firebase("https://jeffrey-xiao-react.firebaseio.com/comments/" + req.body.url + "/" + key);
-		console.log(req.body.url);
-		firebaseComment.set({
-			id: key,
-			author: req.body.comment.author, 
-			text: req.body.comment.text
-		});
+		
+		var comment = req.body.comment;
+		comment['id'] = key;
+
+		firebaseComment.set(comment);
 		
 		res.writeHead(200, {'Content-Type': 'text/plain'});
 		res.end("Successfully added to firebase database!");

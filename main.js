@@ -1,7 +1,27 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 var marked = require('marked');
-var $ = require("jquery");
+var $ = require('jquery');
+var Redux = require('redux');
+
+function activeComment (state, action) {
+	if (typeof state === 'undefined')
+		return "";
+	switch (action.type) {
+		case 'SET':
+			return action.state;
+		default:
+			return "";
+	}
+}
+
+var store = Redux.createStore(activeComment);
+
+
+var options = {
+    weekday: "long", year: "numeric", month: "short",
+    day: "numeric", hour: "2-digit", minute: "2-digit"
+}
 
 var Comment = React.createClass({
 	getInitialState: function () {
@@ -10,7 +30,7 @@ var Comment = React.createClass({
 		}
 	},
 	
-	toggleForm: function () {
+	toggleForm: function (event) {
 		this.setState({
 			formState: (this.state.formState + 1) % 2
 		});
@@ -25,20 +45,30 @@ var Comment = React.createClass({
 		if (this.state.formState == 1)
 			this.toggleForm();
 		url.unshift('child');
-		url.unshift(this.props.id);
+		url.unshift(this.props.data.id);
 		this.props.onCommentSubmit(comment, url);
+	},
+	
+	setActive: function () {
+		store.dispatch({type: 'SET', state: this.props.data.id});
 	},
 	
 	render: function () {
 		return (
-			<div className="comment">
-				<span className="commentBody" dangerouslySetInnerHTML={this.rawMarkup()}/>
-				<p className="commentAuthor">
-					{this.props.author}
-				</p>
-				<button type="button" onClick={this.toggleForm}>Reply</button>
+			<div className={"comment " + (store.getState().toString() == this.props.data.id ? "active" : "")} id={this.props.data.id}>
+				<div className="header">
+					<div className="commentAuthor">{this.props.data.author}</div>
+					<div className="date">&nbsp; on {new Date(this.props.data.date).toLocaleDateString("en-US", options)}</div>
+				</div>
+				
+				<div className="commentBody" dangerouslySetInnerHTML={this.rawMarkup()}/>
+				
+				
+				<a className="link" onClick={this.toggleForm}>Reply</a>
+				<a className="link" href={"/#" + this.props.data.id} onClick={this.setActive}>Permalink</a>
+				
 				<CommentForm onCommentSubmit={this.handleCommentSubmit} formState={this.state.formState}/>
-				<CommentList data={this.props.data} onCommentSubmit={this.handleCommentSubmit}/>
+				<CommentList data={this.props.data.child} onCommentSubmit={this.handleCommentSubmit}/>
 			</div>
 		);
 	}
@@ -54,7 +84,7 @@ var CommentList = React.createClass({
 			var currComponent = this;
 			var commentNodes = Object.keys(comments).map(function (key) {
 				return (
-					<Comment author={comments[key].author} key={comments[key].id} id={comments[key].id} data={comments[key].child} onCommentSubmit={currComponent.handleCommentSubmit}>
+					<Comment key={comments[key].id} data={comments[key]} onCommentSubmit={currComponent.handleCommentSubmit}>
 						{comments[key].text}
 					</Comment>
 				);
@@ -95,7 +125,12 @@ var CommentForm = React.createClass({
 		if (!text || !author)
 			return 0;
 		
-		this.props.onCommentSubmit({author: author, text: text}, []);
+		this.props.onCommentSubmit({
+			author: author, 
+			text: text, 
+			date: Date()
+		}, []);
+		
 		this.setState({author: '', text: ''});
 	},
 	

@@ -1,15 +1,55 @@
+body {
+	width: 500px;
+}
 .comment {
-	padding: 0px 10px;
-	width: 250px;
+	padding: 5px 10px 5px 30px;
+	width: calc(100% - 40px);
 	border: solid 2px #333;
 	border-radius: 10px;
-	background-color: #ccc;
+	background-color: #fafafa;
 	color: #333;
-	margin: 5px;
-	h2 {
-		margin: 0;
+	margin: 5px 0px;
+	position: relative;
+	&.active:before {
+		content: "";
+		height: calc(100% + 4px);
+		border-left: solid 5px darkblue;
+		border-right: solid 5px darkblue;
+		position: absolute;
+		left: 0px;
+		top: -2px;
+		border-top-left-radius: 10px;
+		border-bottom-left-radius: 10px;
+	}
+	.header {
+		padding: 5px 10px;
+		width: calc(100% - 20px);
+		text-align: left;
+		background-color: #ccc;
+		border: solid 1px #333;
+		border-radius: 5px;
+		.commentAuthor {
+			display: inline-block;
+			font-weight: bold;
+		}
+		.date {
+			display: inline-block;
+		}
 	}
 }
+
+.link {
+	color: blue;
+	transition: 0.25s all;
+	cursor: pointer;
+	display: inline-block;
+	text-decoration: none;
+	margin-right: 10px;
+	&:hover {
+		text-decoration: underline;
+	}
+}
+
 
 .commentForm {
 	margin-top: 15px;
