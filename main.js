@@ -27,7 +27,8 @@ var options = {
 var Comment = React.createClass({
 	getInitialState: function () {
 		return {
-			formState: 0
+			formState: 0,
+			activeComment: store.getState()
 		}
 	},
 	
