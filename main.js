@@ -3,6 +3,7 @@ var ReactDOM = require('react-dom');
 var marked = require('marked');
 var $ = require('jquery');
 var Redux = require('redux');
+var ReactRedux = require('react-redux');
 
 function activeComment (state, action) {
 	if (typeof state === 'undefined')
@@ -212,6 +213,6 @@ var CommentBox = React.createClass({
 	}
 });
 ReactDOM.render(
-	<CommentBox url={'/api/comments'} pollInterval={2000}/>,
+	<ReactRedux.Provider store={store}><CommentBox url={'/api/comments'} pollInterval={2000}/></ReactRedux.Provider>,
 	document.getElementById('content')
 );
