@@ -2,21 +2,6 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var marked = require('marked');
 var $ = require('jquery');
-var Redux = require('redux');
-var ReactRedux = require('react-redux');
-
-function activeComment (state, action) {
-	if (typeof state === 'undefined')
-		return "";
-	switch (action.type) {
-		case 'SET':
-			return action.state;
-		default:
-			return "";
-	}
-}
-
-var store = Redux.createStore(activeComment);
 
 
 var options = {
@@ -25,10 +10,14 @@ var options = {
 }
 
 var Comment = React.createClass({
+	contextTypes: {
+		activeComment: React.PropTypes.string,
+		root: React.PropTypes.object
+	},
+	
 	getInitialState: function () {
 		return {
 			formState: 0,
-			activeComment: store.getState()
 		}
 	},
 	
@@ -52,22 +41,24 @@ var Comment = React.createClass({
 	},
 	
 	setActive: function () {
-		store.dispatch({type: 'SET', state: this.props.data.id});
+		this.context.activeComment = this.props.data.id;
+		this.context.root.forceUpdate();
+		window.location.href = "/#comment-" + this.props.data.id;
 	},
 	
 	render: function () {
 		return (
-			<div className={"comment " + (store.getState().toString() == this.props.data.id ? "active" : "")} id={this.props.data.id}>
+			<div className={"comment " + (this.context.activeComment == this.props.data.id ? "active" : "")} id={"comment-"+this.props.data.id}>
 				<div className="header">
 					<div className="commentAuthor">{this.props.data.author}</div>
-					<div className="date">&nbsp; on {new Date(this.props.data.date).toLocaleDateString("en-US", options)}</div>
+					<div className="date">&nbsp;on {new Date(this.props.data.date).toLocaleDateString("en-US", options)}</div>
 				</div>
 				
 				<div className="commentBody" dangerouslySetInnerHTML={this.rawMarkup()}/>
 				
 				
 				<a className="link" onClick={this.toggleForm}>Reply</a>
-				<a className="link" href={"/#" + this.props.data.id} onClick={this.setActive}>Permalink</a>
+				<a className="link" onClick={this.setActive}>Permalink</a>
 				
 				<CommentForm onCommentSubmit={this.handleCommentSubmit} formState={this.state.formState}/>
 				<CommentList data={this.props.data.child} onCommentSubmit={this.handleCommentSubmit}/>
@@ -77,6 +68,11 @@ var Comment = React.createClass({
 });
 
 var CommentList = React.createClass({
+	contextTypes: {
+		activeComment: React.PropTypes.string,
+		prevComponent: React.PropTypes.object
+	},
+	
 	handleCommentSubmit: function (comment, url) {
 		this.props.onCommentSubmit(comment, url);
 	},
@@ -161,13 +157,29 @@ var CommentForm = React.createClass({
 });
 
 var CommentBox = React.createClass({
-	loadComments: function () {
+	childContextTypes: {
+		activeComment: React.PropTypes.string,
+		root: React.PropTypes.object
+	},
+	
+	getChildContext: function () {
+		var activeComment = "";
+		if (window.location.hash.length > 0)
+			activeComment = window.location.hash.substr(9);
+		return {
+			activeComment: activeComment,
+			root: this
+		}
+	},
+	
+	loadComments: function (callback) {
 		$.ajax({
 			url: this.props.url,
 			dataType: 'json',
 			cache: false,
 			success: function (data) {
 				this.setState({data: data['comments']});
+				callback();
 			}.bind(this),
 			error: function (xhr, status, error) {
 				console.error(this.props.url, status, error.toString());
@@ -183,7 +195,9 @@ var CommentBox = React.createClass({
 	},
 	
 	componentDidMount: function () {
-		this.loadComments();
+		this.loadComments(function() {
+			window.location.href = "/#comment-" + window.location.hash.substr(9);
+		});
 		setInterval(this.loadComments, this.props.pollInterval);
 	},
 	
@@ -214,6 +228,6 @@ var CommentBox = React.createClass({
 	}
 });
 ReactDOM.render(
-	<ReactRedux.Provider store={store}><CommentBox url={'/api/comments'} pollInterval={2000}/></ReactRedux.Provider>,
+	<CommentBox url={'/api/comments'} pollInterval={2000000}/>,
 	document.getElementById('content')
 );
