@@ -98,7 +98,7 @@ var marked = require('marked');
 var $ = require('jquery');
 
 var options = {
-	weekday: "long", year: "numeric", month: "short",
+	year: "numeric", month: "short",
 	day: "numeric", hour: "2-digit", minute: "2-digit"
 };
 
@@ -255,7 +255,7 @@ var CommentForm = React.createClass({
 				onChange: this.handleAuthorChange
 			}),
 			React.createElement('br', null),
-			React.createElement('input', {
+			React.createElement('textarea', {
 				type: 'text',
 				placeholder: 'Comment here...',
 				value: this.state.text,
@@ -308,7 +308,7 @@ var CommentBox = React.createClass({
 
 	componentDidMount: function () {
 		this.loadComments(function () {
-			window.location.href = "/#comment-" + window.location.hash.substr(9);
+			if (window.location.hash.length >= 9) window.location.href = "/#comment-" + window.location.hash.substr(9);
 		});
 		setInterval(this.loadComments, this.props.pollInterval);
 	},
@@ -342,7 +342,7 @@ var CommentBox = React.createClass({
 		);
 	}
 });
-ReactDOM.render(React.createElement(CommentBox, { url: '/api/comments', pollInterval: 2000000 }), document.getElementById('content'));
+ReactDOM.render(React.createElement(CommentBox, { url: '/api/comments', pollInterval: 2000 }), document.getElementById('content'));
 
 },{"jquery":30,"marked":31,"react":161,"react-dom":32}],3:[function(require,module,exports){
 (function (process){

@@ -5,7 +5,7 @@ var $ = require('jquery');
 
 
 var options = {
-    weekday: "long", year: "numeric", month: "short",
+    year: "numeric", month: "short",
     day: "numeric", hour: "2-digit", minute: "2-digit"
 }
 
@@ -142,7 +142,7 @@ var CommentForm = React.createClass({
 						value={this.state.author}
 						onChange={this.handleAuthorChange}
 					/><br/>
-					<input 
+					<textarea 
 						type="text" 
 						placeholder="Comment here..."
 						value={this.state.text}
@@ -196,7 +196,8 @@ var CommentBox = React.createClass({
 	
 	componentDidMount: function () {
 		this.loadComments(function() {
-			window.location.href = "/#comment-" + window.location.hash.substr(9);
+			if (window.location.hash.length >= 9)
+				window.location.href = "/#comment-" + window.location.hash.substr(9);
 		});
 		setInterval(this.loadComments, this.props.pollInterval);
 	},
@@ -228,6 +229,6 @@ var CommentBox = React.createClass({
 	}
 });
 ReactDOM.render(
-	<CommentBox url={'/api/comments'} pollInterval={2000000}/>,
+	<CommentBox url={'/api/comments'} pollInterval={2000}/>,
 	document.getElementById('content')
 );

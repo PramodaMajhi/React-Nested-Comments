@@ -1,8 +1,16 @@
-body {
-  width: 500px;
+html {
+  width: 100%;
 }
 
-.comment {
+body {
+  width: calc(100% - 20px);
+}
+
+.commentBox {
+  margin: 20px;
+}
+
+.commentBox .comment {
   padding: 5px 10px 5px 30px;
   width: calc(100% - 40px);
   border: solid 2px #333;
@@ -13,7 +21,7 @@ body {
   position: relative;
 }
 
-.comment.active:before {
+.commentBox .comment.active:before {
   content: "";
   height: calc(100% + 4px);
   border-left: solid 5px darkblue;
@@ -25,7 +33,7 @@ body {
   border-bottom-left-radius: 10px;
 }
 
-.comment .header {
+.commentBox .comment .header {
   padding: 5px 10px;
   width: calc(100% - 20px);
   text-align: left;
@@ -34,12 +42,12 @@ body {
   border-radius: 5px;
 }
 
-.comment .header .commentAuthor {
+.commentBox .comment .header .commentAuthor {
   display: inline-block;
   font-weight: bold;
 }
 
-.comment .header .date {
+.commentBox .comment .header .date {
   display: inline-block;
 }
 
