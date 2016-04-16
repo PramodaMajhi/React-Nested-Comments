@@ -284,14 +284,14 @@ var CommentBox = React.createClass({
 		};
 	},
 
-	loadComments: function (callback) {
+	loadComments: function () {
 		$.ajax({
 			url: this.props.url,
 			dataType: 'json',
 			cache: false,
 			success: function (data) {
 				this.setState({ data: data['comments'] });
-				callback();
+				if (window.location.hash.length >= 9) window.location.href = "/#comment-" + window.location.hash.substr(9);
 			}.bind(this),
 			error: function (xhr, status, error) {
 				console.error(this.props.url, status, error.toString());
@@ -307,9 +307,8 @@ var CommentBox = React.createClass({
 	},
 
 	componentDidMount: function () {
-		this.loadComments(function () {
-			if (window.location.hash.length >= 9) window.location.href = "/#comment-" + window.location.hash.substr(9);
-		});
+		if (window.location.hash.length >= 9) window.location.href = "/#comment-" + window.location.hash.substr(9);
+		this.loadComments();
 		setInterval(this.loadComments, this.props.pollInterval);
 	},
 

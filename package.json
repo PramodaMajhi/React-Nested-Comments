@@ -21,8 +21,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "compile": "browserify -t [ babelify --presets [ react ] ] main.js -o bundle.js",
-    "start": "node server",
+    "start": "browserify -t [ babelify --presets [ react ] ] main.js -o bundle.js && node server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
