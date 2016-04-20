@@ -1,5 +1,5 @@
 {
-  "name": "react-example",
+  "name": "react-nested-comments",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -26,13 +26,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jeffrey-xiao/react-example.git"
+    "url": "git+https://github.com/jeffrey-xiao/react-nested-comments.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/jeffrey-xiao/react-example/issues"
+    "url": "https://github.com/jeffrey-xiao/react-nested-comments/issues"
   },
-  "homepage": "https://github.com/jeffrey-xiao/react-example#readme"
+  "homepage": "https://github.com/jeffrey-xiao/react-nested-comments#readme"
 }
